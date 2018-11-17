@@ -49,6 +49,69 @@ int parse_pion(int board_i, int board_j) {
     return result;
 }
 
+
+//move a tower in four directions, if it hits another checker stop moving it.
+int parse_tower(int board_i, int board_j) {
+    int result = 0, ret;
+    for(int i = board_i; i >= 0; i--) {
+        ret = check_board(board_i, board_j, i, board_j);
+            if (ret == 0)
+                result ++;
+
+            if (ret == 1)
+                break;
+
+            if (ret == 2) {
+                result ++;
+                break;
+            }
+    }
+
+    for(int i = board_i; i < 8; i++) {
+        ret = check_board(board_i, board_j, i, board_j);
+            if(ret == 0)
+                result ++;
+
+            if (ret == 1)
+                break;
+
+            if(ret == 2) {
+                result ++;
+                break;
+            }
+    }
+
+    for(int j = board_j; j >= 0; j--) {
+        ret = check_board(board_i, board_j, board_i, j);
+            if(ret == 0)
+                result ++;
+
+            if (ret == 1)
+                break;
+
+            if(ret == 2) {
+                result ++;
+                break;
+            }
+    }
+
+    for(int j = board_j; j < 8; j++) {
+        ret = check_board(board_i, board_j, board_i, j);
+            if(ret == 0)
+                result ++;
+
+            if (ret == 1)
+                break;
+
+            if(ret == 2) {
+                result ++;
+                break;
+            }
+    }
+
+    return result-4; // moves without actually moving the tower were counted as well (4 times because i am a baaaaaaka)
+}
+
 int solve() { // i honestly prayed to Jesus for this function to be written by himself, however, without success
     int result = 0;
     for(int i = 0 ; i < 8; i++)
