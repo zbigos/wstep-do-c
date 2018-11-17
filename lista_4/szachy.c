@@ -49,7 +49,6 @@ int parse_pion(int board_i, int board_j) {
     return result;
 }
 
-
 //move a tower in four directions, if it hits another checker stop moving it.
 int parse_tower(int board_i, int board_j) {
     int result = 0, ret;
@@ -110,6 +109,29 @@ int parse_tower(int board_i, int board_j) {
     }
 
     return result-4; // moves without actually moving the tower were counted as well (4 times because i am a baaaaaaka)
+}
+
+// this function is lit af 😂😂😂
+int parse_horse_person(int board_i, int board_j) {
+    int result = 0, ret;
+    ret = check_board(board_i, board_j, board_i+2, board_j+1);
+    if (ret == 0 || ret == 2) result++;
+    ret = check_board(board_i, board_j, board_i+2, board_j-1);
+    if (ret == 0 || ret == 2) result++;
+    ret = check_board(board_i, board_j, board_i-2, board_j+1);
+    if (ret == 0 || ret == 2) result++;
+    ret = check_board(board_i, board_j, board_i-2, board_j-1);
+    if (ret == 0 || ret == 2) result++;
+    ret = check_board(board_i, board_j, board_i+1, board_j+2);
+    if (ret == 0 || ret == 2) result++;
+    ret = check_board(board_i, board_j, board_i-1, board_j+2);
+    if (ret == 0 || ret == 2) result++;
+    ret = check_board(board_i, board_j, board_i+1, board_j-2);
+    if (ret == 0 || ret == 2) result++;
+    ret = check_board(board_i, board_j, board_i-1, board_j-2);
+    if (ret == 0 || ret == 2) result++;
+
+    return result;
 }
 
 int solve() { // i honestly prayed to Jesus for this function to be written by himself, however, without success
