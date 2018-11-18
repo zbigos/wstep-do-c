@@ -1,5 +1,9 @@
 #include <stdio.h>
 
+#define bool int
+#define true 1
+#define false 0
+
 char board[8][8]; // this shouldn't be a globall array, but i can't be expected to do two shits about it
 
 void read_input() {
@@ -136,6 +140,43 @@ int parse_tower(int board_i, int board_j) {
     return result;
 }
 
+int parse_goniec(int board_i, int board_j) {
+    int result = 0, ret;
+    bool try1 = true, try2 = true, try3 = true, try4 = true;
+    for(int i = 1; i < 15; i++) {
+        if (try1) {
+            ret = check_board(board_i, board_j, board_i+i, board_j+i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try1 = false;
+        }
+        if (try2) {
+            ret = check_board(board_i, board_j, board_i-i, board_j+i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try2 = false;
+        }
+        if (try3) {
+            ret = check_board(board_i, board_j, board_i+i, board_j-i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try3 = false;
+        }
+        if (try4) {
+            ret = check_board(board_i, board_j, board_i-i, board_j-i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try4 = false;
+        }
+    }
+
+    return result;
+}
+
 // this function is lit af 😂😂😂
 int parse_horse_person(int board_i, int board_j) {
     int result = 0, ret;
@@ -177,6 +218,7 @@ int solve() { // i honestly prayed to Jesus for this function to be written by h
                 break;
 
                 case 'G': // goniec (as you can see, i have given up on the english names)
+                    result += parse_goniec(i,j);
                 break;
 
                 case 'H': // the perfect female protagonist
