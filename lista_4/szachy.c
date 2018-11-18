@@ -134,7 +134,21 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
     board[board_i][board_j] = hold_from;
     board[board_res_i][board_res_j] = hold_to;
 
+
+    int spaces = 0;
+    for(int i = -1; i <= 1; i++)
+        for(int j = -1; j <= 1; j++)
+            if(kingi+i >= 0 && kingi+i <= 7 && kingj+j >= 0 && kingj+j <= 7)
+                if(forbidden[kingi+i][kingj+j] == 'O')
+                    spaces ++;
+/*
     if(forbidden[kingi][kingj] == 'X') return 1; else return 0;
+*/
+ //   printf("%d %c\n", spaces, forbidden[kingi][kingj]);
+    if(spaces > 1 && forbidden[kingi][kingj] == 'O') 
+        return 0;
+
+    return 1;
 }
 
 /*
@@ -227,7 +241,7 @@ int parse_pion(int board_i, int board_j) {
         else
             result ++;
     }
-    
+
     if(DEBUG)
         printf("%d possibilities with %d %d pion\n", result, board_i, board_j);
 
