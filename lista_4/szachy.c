@@ -4,8 +4,8 @@
 #define true 1
 #define false 0
 
-#define DEBUG true
-#define DEBUG_BOARD_PRINTOUT true
+#define DEBUG false
+#define DEBUG_BOARD_PRINTOUT false
 #define DEBUG_REURNED_WRAPPER false
 
 char board[8][8]; // this shouldn't be a globall array, but i can't be expected to do two shits about it
@@ -156,11 +156,12 @@ int check_board_wrapped(int board_i, int board_j, int board_res_i, int board_res
         return check_checker(board_i, board_j, board_res_i, board_res_j, false);
 
     if (target == 'p' || target == 'w' || target == 's' || \
-        target == 'g' || target == 'h')
+        target == 'g' || target == 'h') {
         if (check_checker(board_i, board_j, board_res_i, board_res_j, false) == 0)
             return 2;
         else
             return 1;
+    }
 
     if (target == 'P' || target == 'W' || target == 'S' || \
         target == 'G' || target == 'H' || target == 'k' || target == 'K')
@@ -212,19 +213,21 @@ int parse_pion(int board_i, int board_j) {
     }
 
     ret = check_board(board_i, board_j, board_i-1, board_j-1);
-    if (ret == 2)
+    if (ret == 2) {
         if(board_i == 1)
             result += 4;
         else
             result ++;
+    }
 
     ret = check_board(board_i, board_j, board_i-1, board_j+1);
-    if (ret == 2)
+    if (ret == 2)  {
         if (board_i == 1)
             result += 4;
         else
             result ++;
-
+    }
+    
     if(DEBUG)
         printf("%d possibilities with %d %d pion\n", result, board_i, board_j);
 
@@ -468,6 +471,6 @@ int solve() { // i honestly prayed to Jesus for this function to be written by h
 
 int main() {
     read_input();
-    check_checker(1,1,1,1, true);
+    //check_checker(1,1,1,1, true);
     printf("%d", solve());
 }
