@@ -81,6 +81,14 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
                 setbad(i-1,j-2);
           }
 
+    for(int i = 0 ; i < 8; i++)
+        for(int j = 0 ; j < 8; j++)
+            if(board[i][j] == 'k')
+                for(int a = -1; a <= 1; a++)
+                    for(int  b = -1; b <= 1; b++)
+                       setbad(i+a,j+b);
+    
+
     if (debug)
         for (int i = 0 ; i < 8; i++) {
             for (int j = 0 ; j < 8; j++)
