@@ -5,6 +5,8 @@
 #define false 0
 
 #define DEBUG true
+#define DEBUG_BOARD_PRINTOUT true
+#define DEBUG_REURNED_WRAPPER false
 
 char board[8][8]; // this shouldn't be a globall array, but i can't be expected to do two shits about it
 
@@ -41,6 +43,15 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
 
     board[board_i][board_j] = '.';
     board[board_res_i][board_res_j] = hold_from;
+
+    if(DEBUG_BOARD_PRINTOUT) {
+        printf("--------------------------\n");
+        for(int i = 0 ; i < 8; i++) {
+            for(int j = 0 ; j < 8; j++)
+                printf("%c", board[i][j]);
+            printf("\n");
+        }
+    }
 
     for(int i = 0 ; i < 8; i++)
         for(int j = 0 ; j < 8; j++)
@@ -132,8 +143,10 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
  * return 1 if the move is invalid
  * return 2 if the move is vaild, but the next move in that direction will not be
  * (a checker has been removed)
+ * return 3 for when the move is invalid, and the next one will not be valid as well
 */
-int check_board(int board_i, int board_j, int board_res_i, int board_res_j) {
+
+int check_board_wrapped(int board_i, int board_j, int board_res_i, int board_res_j) {
     if (board_res_i < 0 || board_res_j < 0 || board_res_i > 7 || board_res_j > 7)
         return 1; // out of bounds move
 
@@ -144,13 +157,25 @@ int check_board(int board_i, int board_j, int board_res_i, int board_res_j) {
 
     if (target == 'p' || target == 'w' || target == 's' || \
         target == 'g' || target == 'h')
-        if(check_checker(board_i, board_j, board_res_i, board_res_j, false) == 0)
+        if (check_checker(board_i, board_j, board_res_i, board_res_j, false) == 0)
             return 2;
         else
             return 1;
 
+    if (target == 'P' || target == 'W' || target == 'S' || \
+        target == 'G' || target == 'H' || target == 'k' || target == 'K')
+            return 3;
+
     return 1;
         // for when the player is trying to intersect his own checker
+}
+
+int check_board(int board_i, int board_j, int board_res_i, int board_res_j) {
+    int ret = check_board_wrapped(board_i, board_j, board_res_i, board_res_j);
+    if(DEBUG_REURNED_WRAPPER)
+        printf("returned with %d\n", ret);
+
+    return ret;
 }
 
 int parse_king(int board_i, int board_j) {
@@ -214,7 +239,7 @@ int parse_tower(int board_i, int board_j) {
             if (ret == 0)
                 result ++;
 
-            if (ret == 1)
+            if (ret == 3)
                 break;
 
             if (ret == 2) {
@@ -228,7 +253,7 @@ int parse_tower(int board_i, int board_j) {
             if(ret == 0)
                 result ++;
 
-            if (ret == 1)
+            if (ret == 3)
                 break;
 
             if(ret == 2) {
@@ -242,7 +267,7 @@ int parse_tower(int board_i, int board_j) {
             if(ret == 0)
                 result ++;
 
-            if (ret == 1)
+            if (ret == 3)
                 break;
 
             if(ret == 2) {
@@ -256,7 +281,7 @@ int parse_tower(int board_i, int board_j) {
             if(ret == 0)
                 result ++;
 
-            if (ret == 1)
+            if (ret == 3)
                 break;
 
             if(ret == 2) {
@@ -265,6 +290,9 @@ int parse_tower(int board_i, int board_j) {
             }
     }
 
+    if(DEBUG)
+        printf("%d possibilities with %d %d tower\n", result, board_i, board_j);
+ 
     return result;
 }
 
@@ -276,32 +304,34 @@ int parse_goniec(int board_i, int board_j) {
             ret = check_board(board_i, board_j, board_i+i, board_j+i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try1 = false;
         }
         if (try2) {
             ret = check_board(board_i, board_j, board_i-i, board_j+i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try2 = false;
         }
         if (try3) {
             ret = check_board(board_i, board_j, board_i+i, board_j-i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try3 = false;
         }
         if (try4) {
             ret = check_board(board_i, board_j, board_i-i, board_j-i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try4 = false;
         }
     }
-
+    if(DEBUG)
+        printf("%d possibilities with %d %d goniec\n", result, board_i, board_j);
+ 
     return result;
 }
 
@@ -315,28 +345,28 @@ int parse_perfect_female_protagonist(int board_i, int board_j) {
             ret = check_board(board_i, board_j, board_i+i, board_j+i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try1 = false;
         }
         if (try2) {
             ret = check_board(board_i, board_j, board_i-i, board_j+i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try2 = false;
         }
         if (try3) {
             ret = check_board(board_i, board_j, board_i+i, board_j-i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try3 = false;
         }
         if (try4) {
             ret = check_board(board_i, board_j, board_i-i, board_j-i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try4 = false;
         }
 
@@ -344,28 +374,28 @@ int parse_perfect_female_protagonist(int board_i, int board_j) {
             ret = check_board(board_i, board_j, board_i, board_j+i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try5 = false;
         }
         if (try6) {
             ret = check_board(board_i, board_j, board_i, board_j-i);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try6 = false;
         }
         if (try7) {
             ret = check_board(board_i, board_j, board_i+i, board_j);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try7 = false;
         }
         if (try8) {
             ret = check_board(board_i, board_j, board_i-i, board_j);
             if (ret == 0 || ret == 2)
                 result ++;
-            if (ret == 1 || ret == 2)
+            if (ret == 2 || ret == 3)
                 try8 = false;
         }
     }
