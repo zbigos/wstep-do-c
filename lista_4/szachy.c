@@ -12,6 +12,9 @@ void read_input() {
     }
 }
 
+int max(int a, int b) {
+    return a>b?a:b;
+}
 
 /*
  * this funcion, will (if I ever get around to implementing that)
@@ -25,12 +28,28 @@ int check_board(board_i, board_j, board_res_i, board_res_j) {
 
 }
 
+int parse_king(int board_i, int board_j) {
+    int result = 0, ret;
+    for(int i = -1; i <= 1; i++)
+        for(int j = -1; j <= 1; j++)
+            if(j != 0 && i != 0) {
+                ret = check_board(board_i, board_j, board_i+2, board_j+1);
+                if (ret == 0 || ret == 2) 
+                    result++;
+            }
+    return result;
+}
+
 // TODO add pion switching at the last line
 int parse_pion(int board_i, int board_j) {
     int ret, result = 0;
     ret = check_board(board_i, board_j, board_i-1, board_j);
     if (ret == 0) {
-        result ++;
+        if(board_i == 1)
+            result += 4;
+        else
+            result ++;
+        
         if(board_i == 6) {
             ret = check_board(board_i, board_j, board_i-2, board_j);
             if(ret == 0)
@@ -58,7 +77,7 @@ int parse_pion(int board_i, int board_j) {
 //move a tower in four directions, if it hits another checker stop moving it.
 int parse_tower(int board_i, int board_j) {
     int result = 0, ret;
-    for(int i = board_i; i >= 0; i--) {
+    for(int i = board_i-1; i >= 0; i--) {
         ret = check_board(board_i, board_j, i, board_j);
             if (ret == 0)
                 result ++;
@@ -72,7 +91,7 @@ int parse_tower(int board_i, int board_j) {
             }
     }
 
-    for(int i = board_i; i < 8; i++) {
+    for(int i = board_i+1; i < 8; i++) {
         ret = check_board(board_i, board_j, i, board_j);
             if(ret == 0)
                 result ++;
@@ -86,7 +105,7 @@ int parse_tower(int board_i, int board_j) {
             }
     }
 
-    for(int j = board_j; j >= 0; j--) {
+    for(int j = board_j-1; j >= 0; j--) {
         ret = check_board(board_i, board_j, board_i, j);
             if(ret == 0)
                 result ++;
@@ -100,7 +119,7 @@ int parse_tower(int board_i, int board_j) {
             }
     }
 
-    for(int j = board_j; j < 8; j++) {
+    for(int j = board_j+1; j < 8; j++) {
         ret = check_board(board_i, board_j, board_i, j);
             if(ret == 0)
                 result ++;
@@ -114,7 +133,7 @@ int parse_tower(int board_i, int board_j) {
             }
     }
 
-    return result-4; // moves without actually moving the tower were counted as well (4 times because i am a baaaaaaka)
+    return result;
 }
 
 // this function is lit af 😂😂😂
@@ -158,7 +177,6 @@ int solve() { // i honestly prayed to Jesus for this function to be written by h
                 break;
 
                 case 'G': // goniec (as you can see, i have given up on the english names)
-
                 break;
 
                 case 'H': // the perfect female protagonist
@@ -166,7 +184,7 @@ int solve() { // i honestly prayed to Jesus for this function to be written by h
                 break;
 
                 case 'K': // king
-
+                    result += parse_king(i, j);
                 break;
 
                 default:
