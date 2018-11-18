@@ -177,6 +177,74 @@ int parse_goniec(int board_i, int board_j) {
     return result;
 }
 
+int parse_perfect_female_protagonist(int board_i, int board_j) {
+    int result = 0, ret;
+    bool try1 = true, try2 = true, try3 = true, try4 = true;
+    bool try5 = true, try6 = true, try7 = true, try8 = true;
+    
+    for(int i = 1; i < 15; i++) {
+        if (try1) {
+            ret = check_board(board_i, board_j, board_i+i, board_j+i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try1 = false;
+        }
+        if (try2) {
+            ret = check_board(board_i, board_j, board_i-i, board_j+i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try2 = false;
+        }
+        if (try3) {
+            ret = check_board(board_i, board_j, board_i+i, board_j-i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try3 = false;
+        }
+        if (try4) {
+            ret = check_board(board_i, board_j, board_i-i, board_j-i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try4 = false;
+        }
+
+        if (try5) {
+            ret = check_board(board_i, board_j, board_i, board_j+i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try5 = false;
+        }
+        if (try6) {
+            ret = check_board(board_i, board_j, board_i, board_j-i);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try6 = false;
+        }
+        if (try7) {
+            ret = check_board(board_i, board_j, board_i+i, board_j);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try7 = false;
+        }
+        if (try8) {
+            ret = check_board(board_i, board_j, board_i-i, board_j);
+            if (ret == 0 || ret == 2)
+                result ++;
+            if (ret == 1 || ret == 2)
+                try8 = false;
+        }
+    }
+
+    return result;
+}
+
 // this function is lit af 😂😂😂
 int parse_horse_person(int board_i, int board_j) {
     int result = 0, ret;
@@ -222,7 +290,7 @@ int solve() { // i honestly prayed to Jesus for this function to be written by h
                 break;
 
                 case 'H': // the perfect female protagonist
-
+                    result += parse_perfect_female_protagonist(i,j);
                 break;
 
                 case 'K': // king
