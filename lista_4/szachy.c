@@ -4,6 +4,8 @@
 #define true 1
 #define false 0
 
+#define DEBUG true
+
 char board[8][8]; // this shouldn't be a globall array, but i can't be expected to do two shits about it
 
 void read_input() {
@@ -54,7 +56,7 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
     
     for(int i = 0 ; i < 8; i++)
         for(int j = 0 ; j < 8; j++)
-            if(board[i][j] == 't') {
+            if(board[i][j] == 't' || board[i][j] == 'h') {
                 setbad(i,j);
                 for(int k = 1 ; k < 20; k++)
                     if(board[i+k][j] == '.' || board[i+k][j] == 'K') setbad(i+k, j); else break;
@@ -65,7 +67,20 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
                 for(int k = 1 ; k < 20; k++)
                     if(board[i][j-k] == '.' || board[i][j-k] == 'K') setbad(i, j-k); else break;
             }
-    
+
+    for(int i = 0 ; i < 8; i++)
+        for(int j = 0 ; j < 8; j++)
+            if(board[i][j] == 'g' || board[i][j] == 'h') {
+                setbad(i,j);
+                for(int k = 1 ; k < 20; k++)
+                    if(board[i+k][j+k] == '.' || board[i+k][j+k] == 'K') setbad(i+k, j+k); else break;
+                 for(int k = 1 ; k < 20; k++)
+                    if(board[i-k][j-k] == '.' || board[i-k][j-k] == 'K') setbad(i-k, j-k); else break;
+                for(int k = 1 ; k < 20; k++)
+                    if(board[i-k][j+k] == '.' || board[i-k][j+k] == 'K') setbad(i-k, j+k); else break;
+                for(int k = 1 ; k < 20; k++)
+                    if(board[i+k][j-k] == '.' || board[i+k][j-k] == 'K') setbad(i+k, j-k); else break;
+            }    
 
     for(int i = 0 ; i < 8; i++)
         for(int j = 0 ; j < 8; j++)
@@ -95,10 +110,20 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
                 printf("%c", forbidden[i][j]);
             printf("\n");
         }
+
+    // scan the board for the position of K, because i am a baaaaka, and don't have
+    // it written elsewhere
+    int kingi, kingj;
+    for(int i = 0 ; i < 8; i++)
+        for(int j = 0 ; j < 8; j++)
+            if(board[i][j] == 'K') {kingi = i; kingj = j;}
+
     /*code to check if move is valid here*/
 
     board[board_i][board_j] = hold_from;
     board[board_res_i][board_res_j] = hold_to;
+
+    if(forbidden[kingi][kingj] == 'X') return 1; else return 0;
 }
 
 /*
@@ -132,11 +157,14 @@ int parse_king(int board_i, int board_j) {
     int result = 0, ret;
     for(int i = -1; i <= 1; i++)
         for(int j = -1; j <= 1; j++)
-            if(j != 0 && i != 0) {
-                ret = check_board(board_i, board_j, board_i+2, board_j+1);
+            if(!(j == 0 && i == 0)) {
+                ret = check_board(board_i, board_j, board_i+i, board_j+j);
                 if (ret == 0 || ret == 2) 
                     result++;
             }
+    
+    if(DEBUG)
+        printf("%d possibilities with %d %d king\n", result, board_i, board_j);
     return result;
 }
 
@@ -171,6 +199,9 @@ int parse_pion(int board_i, int board_j) {
             result += 4;
         else
             result ++;
+
+    if(DEBUG)
+        printf("%d possibilities with %d %d pion\n", result, board_i, board_j);
 
     return result;
 }
@@ -339,6 +370,8 @@ int parse_perfect_female_protagonist(int board_i, int board_j) {
         }
     }
 
+    if(DEBUG)
+        printf("%d possibilities with %d %d perfect female protagonist\n", result, board_i, board_j);
     return result;
 }
 
@@ -362,6 +395,8 @@ int parse_horse_person(int board_i, int board_j) {
     ret = check_board(board_i, board_j, board_i-1, board_j-2);
     if (ret == 0 || ret == 2) result++;
 
+    if(DEBUG)
+        printf("%d possibilities with %d %d horse person\n", result, board_i, board_j);
     return result;
 }
 
