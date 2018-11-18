@@ -49,7 +49,23 @@ int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, in
             if(board[i][j] == 'p') {
                 setbad(i+1, j+1);
                 setbad(i+1, j-1);
+                setbad(i,j);
             }
+    
+    for(int i = 0 ; i < 8; i++)
+        for(int j = 0 ; j < 8; j++)
+            if(board[i][j] == 't') {
+                setbad(i,j);
+                for(int k = 1 ; k < 20; k++)
+                    if(board[i+k][j] == '.' || board[i+k][j] == 'K') setbad(i+k, j); else break;
+                 for(int k = 1 ; k < 20; k++)
+                    if(board[i-k][j] == '.' || board[i-k][j] == 'K') setbad(i-k, j); else break;
+                for(int k = 1 ; k < 20; k++)
+                    if(board[i][j+k] == '.' || board[i][j+k] == 'K') setbad(i, j+k); else break;
+                for(int k = 1 ; k < 20; k++)
+                    if(board[i][j-k] == '.' || board[i][j-k] == 'K') setbad(i, j-k); else break;
+            }
+    
 
     if (debug)
         for (int i = 0 ; i < 8; i++) {
