@@ -20,6 +20,16 @@ int max(int a, int b) {
     return a>b?a:b;
 }
 
+
+// blatantly moving away the code i don't want to write
+/*
+ * 0 for a valid state
+ * 1 for invalid
+*/
+int check_checker(board_i, board_j, board_res_i, board_res_j) {
+    return 1;
+}
+
 /*
  * this funcion, will (if I ever get around to implementing that)
  * return 0 if the move is valid
@@ -29,7 +39,22 @@ int max(int a, int b) {
 */
 int check_board(board_i, board_j, board_res_i, board_res_j) {
     if (board_res_i < 0 || board_res_j < 0 || board_res_i > 7 || board_res_j > 7)
-        return 1;
+        return 1; // out of bounds move
+
+    char target = board[board_res_i][board_res_j];
+
+    if (target == ' ')
+        return check_checker(board_i, board_j, board_res_i, board_res_j);
+
+    if (target == 'p' || target == 'w' || target == 's' || \
+        target == 'g' || target == 'h')
+        if(check_checker(board_i, board_j, board_res_i, board_res_j) == 0)
+            return 2;
+        else
+            return 1;
+
+    return 1;
+        // for when the player is trying to intersect his own checker
 }
 
 int parse_king(int board_i, int board_j) {
