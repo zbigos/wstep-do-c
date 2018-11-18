@@ -40,11 +40,17 @@ int parse_pion(int board_i, int board_j) {
 
     ret = check_board(board_i, board_j, board_i-1, board_j-1);
     if (ret == 2)
-        result ++;
+        if(board_i == 1)
+            result += 4;
+        else
+            result ++;
 
     ret = check_board(board_i, board_j, board_i-1, board_j+1);
     if (ret == 2)
-        result ++;
+        if (board_i == 1)
+            result += 4;
+        else
+            result ++;
 
     return result;
 }
@@ -144,11 +150,11 @@ int solve() { // i honestly prayed to Jesus for this function to be written by h
                 break;
 
                 case 'W': // tower
-
+                    result += parse_tower(i,j);
                 break;
 
                 case 'S': // mf horse person 😂😂😂
-
+                    result += parse_horse_person(i,j);
                 break;
 
                 case 'G': // goniec (as you can see, i have given up on the english names)
