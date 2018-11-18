@@ -28,8 +28,8 @@ int max(int a, int b) {
  * (a checker has been removed)
 */
 int check_board(board_i, board_j, board_res_i, board_res_j) {
-    return 0;
-
+    if (board_res_i < 0 || board_res_j < 0 || board_res_i > 7 || board_res_j > 7)
+        return 1;
 }
 
 int parse_king(int board_i, int board_j) {
