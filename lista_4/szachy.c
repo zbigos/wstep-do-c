@@ -26,8 +26,41 @@ int max(int a, int b) {
  * 0 for a valid state
  * 1 for invalid
 */
-int check_checker(board_i, board_j, board_res_i, board_res_j) {
-    return 1;
+
+char forbidden[8][8];
+void setbad(int i, int j) {
+    if(i >= 0 && i <= 7 && j >= 0 && j<= 7)
+        forbidden[i][j] = 'X';
+}
+
+int check_checker(int board_i, int board_j, int board_res_i, int board_res_j, int debug) {
+    char hold_from = board[board_i][board_j];
+    char hold_to = board[board_res_i][board_res_j];
+
+    board[board_i][board_j] = '.';
+    board[board_res_i][board_res_j] = hold_from;
+
+    for(int i = 0 ; i < 8; i++)
+        for(int j = 0 ; j < 8; j++)
+            forbidden[i][j] = 'O';
+
+    for(int i = 0 ; i < 8; i++)
+        for(int j = 0 ; j < 8; j++)
+            if(board[i][j] == 'p') {
+                setbad(i+1, j+1);
+                setbad(i+1, j-1);
+            }
+
+    if (debug)
+        for (int i = 0 ; i < 8; i++) {
+            for (int j = 0 ; j < 8; j++)
+                printf("%c", forbidden[i][j]);
+            printf("\n");
+        }
+    /*code to check if move is valid here*/
+
+    board[board_i][board_j] = hold_from;
+    board[board_res_i][board_res_j] = hold_to;
 }
 
 /*
@@ -37,18 +70,18 @@ int check_checker(board_i, board_j, board_res_i, board_res_j) {
  * return 2 if the move is vaild, but the next move in that direction will not be
  * (a checker has been removed)
 */
-int check_board(board_i, board_j, board_res_i, board_res_j) {
+int check_board(int board_i, int board_j, int board_res_i, int board_res_j) {
     if (board_res_i < 0 || board_res_j < 0 || board_res_i > 7 || board_res_j > 7)
         return 1; // out of bounds move
 
     char target = board[board_res_i][board_res_j];
 
-    if (target == ' ')
-        return check_checker(board_i, board_j, board_res_i, board_res_j);
+    if (target == '.')
+        return check_checker(board_i, board_j, board_res_i, board_res_j, false);
 
     if (target == 'p' || target == 'w' || target == 's' || \
         target == 'g' || target == 'h')
-        if(check_checker(board_i, board_j, board_res_i, board_res_j) == 0)
+        if(check_checker(board_i, board_j, board_res_i, board_res_j, false) == 0)
             return 2;
         else
             return 1;
@@ -72,6 +105,7 @@ int parse_king(int board_i, int board_j) {
 // TODO add pion switching at the last line
 int parse_pion(int board_i, int board_j) {
     int ret, result = 0;
+
     ret = check_board(board_i, board_j, board_i-1, board_j);
     if (ret == 0) {
         if(board_i == 1)
@@ -331,5 +365,6 @@ int solve() { // i honestly prayed to Jesus for this function to be written by h
 
 int main() {
     read_input();
+    check_checker(1,1,1,1, true);
     printf("%d", solve());
 }
