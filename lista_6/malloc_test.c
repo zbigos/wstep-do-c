@@ -2,9 +2,9 @@
 #include <stdlib.h>
 
 int main() {
-    long long int low = 0;
-    long long int high = 25000000000;
-
+    size_t low = 0;
+    size_t high = 25000000000;
+    size_t last = 0;
     while(low+1 <= high) {
         size_t mid = (low + high)/2;
         printf("trying to malloc %ld bytes ", mid);
@@ -15,9 +15,10 @@ int main() {
         } else {
             free(pointer);
             printf("Ok\n");
+            last = mid;
             low = mid+1;
         }
     }
 
-    printf("POSSIBLE TO MALLOC %lld\n", (low+high)/2);
+    printf("POSSIBLE TO MALLOC %ld\n", last);
 }
