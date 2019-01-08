@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+char a[20] = "rucham dzieci";
+
 struct ArrayQueue {
     int *t;
     size_t size; // Liczba elementów w kolejsce
