@@ -63,11 +63,17 @@ void* graphical_engine(void *args) {
         long long int time_start = current_timestamp();
         for(int i = 0 ; i < next_gsprite_position; i++) {
             for(int j = 0 ; j < (sprite_array[i].vertical_size); j++)
-               for(int k = 0 ; k < (sprite_array[i].horisontal_size); k++)
-                    if(sprite_array[i].charactermap[j][k].chr >= 10)
-                        mvprintw(j, k, "%c", sprite_array[i].charactermap[j][k].chr);
+               for(int k = 0 ; k < (sprite_array[i].horisontal_size); k++) {
+                    if(sprite_array[i].charactermap[j][k].chr >= 10) {
+                        init_pair(1, COLOR_BLACK, COLOR_WHITE);
+                        attr_on(COLOR_PAIR(1), 0);
+                        mvprintw(j+sprite_array[i].start_vertical_position, k+sprite_array[i].start_horisontal_position, "%c", sprite_array[i].charactermap[j][k].chr);
+                        attr_off(COLOR_PAIR(1), 0);
+                   // } else {
+                   //     mvprintw(j,k ," ");
+                    }
+            }
         }
-
         refresh();
     }
 }

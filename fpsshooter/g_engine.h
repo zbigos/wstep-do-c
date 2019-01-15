@@ -4,6 +4,7 @@
     #include <stdbool.h>
     struct Pixel {
         int chr;
+        short int fr,fg,fb,br,bg,bb;
     };
 
     //count from top left corner

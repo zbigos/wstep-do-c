@@ -4,19 +4,19 @@
 
 #define ABOMICNACJA(XCORD, YCORD, BITMASK) \
     do {    \
-        if(BITMASK & 1) a->charactermap[XCORD+7][YCORD].chr = '#';    \
-        if(BITMASK & 2) a->charactermap[XCORD+6][YCORD+1].chr = '#';  \
-        if(BITMASK & 4) a->charactermap[XCORD+4][YCORD+1].chr = '#';  \
-        if(BITMASK & 8) a->charactermap[XCORD+3][YCORD].chr = '#';    \
-        if(BITMASK & 16) a->charactermap[XCORD+4][YCORD-1].chr = '#'; \
-        if(BITMASK & 32) a->charactermap[XCORD+6][YCORD-1].chr = '#'; \
-        if(BITMASK & 64) a->charactermap[XCORD+5][YCORD].chr = '#';   \
-        if((BITMASK & 1) + (BITMASK & 32)) a->charactermap[XCORD+7][YCORD-1].chr = '#';  \
-        if((BITMASK & 1) + (BITMASK & 2)) a->charactermap[XCORD+7][YCORD+1].chr = '#';   \
-        if((BITMASK & 16) + (BITMASK & 8)) a->charactermap[XCORD+3][YCORD-1].chr = '#';  \
-        if((BITMASK & 4) + (BITMASK & 8)) a->charactermap[XCORD+3][YCORD+1].chr = '#';   \
-        if((BITMASK & 64) + (BITMASK & 2) + (BITMASK & 64) + (BITMASK & 4) + (BITMASK & 4) + (BITMASK & 2)) a->charactermap[XCORD+5][YCORD+1].chr = '#'; \
-        if((BITMASK & 64) + (BITMASK & 32) + (BITMASK & 64) + (BITMASK & 16) + (BITMASK & 16) + (BITMASK & 32)) a->charactermap[XCORD+5][YCORD-1].chr = '#'; \
+        if(BITMASK & 1) a->charactermap[XCORD+7][YCORD].chr = '#'; else a->charactermap[XCORD+7][YCORD].chr = ' ';   \
+        if(BITMASK & 2) a->charactermap[XCORD+6][YCORD+1].chr = '#'; else a->charactermap[XCORD+6][YCORD+1].chr = ' '; \
+        if(BITMASK & 4) a->charactermap[XCORD+4][YCORD+1].chr = '#'; else a->charactermap[XCORD+4][YCORD+1].chr = ' ';  \
+        if(BITMASK & 8) a->charactermap[XCORD+3][YCORD].chr = '#'; else a->charactermap[XCORD+3][YCORD].chr = ' '; \
+        if(BITMASK & 16) a->charactermap[XCORD+4][YCORD-1].chr = '#'; else a->charactermap[XCORD+4][YCORD-1].chr = ' '; \
+        if(BITMASK & 32) a->charactermap[XCORD+6][YCORD-1].chr = '#'; else a->charactermap[XCORD+6][YCORD-1].chr = ' '; \
+        if(BITMASK & 64) a->charactermap[XCORD+5][YCORD].chr = '#'; else a->charactermap[XCORD+5][YCORD].chr = ' '; \
+        if((BITMASK & 1) + (BITMASK & 32)) a->charactermap[XCORD+7][YCORD-1].chr = '#'; else a->charactermap[XCORD+7][YCORD-1].chr = ' ';  \
+        if((BITMASK & 1) + (BITMASK & 2)) a->charactermap[XCORD+7][YCORD+1].chr = '#'; else a->charactermap[XCORD+7][YCORD+1].chr = ' ';   \
+        if((BITMASK & 16) + (BITMASK & 8)) a->charactermap[XCORD+3][YCORD-1].chr = '#'; else a->charactermap[XCORD+3][YCORD-1].chr = ' ';  \
+        if((BITMASK & 4) + (BITMASK & 8)) a->charactermap[XCORD+3][YCORD+1].chr = '#'; else a->charactermap[XCORD+3][YCORD+1].chr = ' ';   \
+        if((BITMASK & 64) + (BITMASK & 2) + (BITMASK & 64) + (BITMASK & 4) + (BITMASK & 4) + (BITMASK & 2)) a->charactermap[XCORD+5][YCORD+1].chr = '#'; else a->charactermap[XCORD+5][YCORD+1].chr = ' '; \
+        if((BITMASK & 64) + (BITMASK & 32) + (BITMASK & 64) + (BITMASK & 16) + (BITMASK & 16) + (BITMASK & 32)) a->charactermap[XCORD+5][YCORD-1].chr = '#'; else a->charactermap[XCORD+5][YCORD-1].chr = ' '; \
     } while(0)
 
 
@@ -42,6 +42,14 @@ int decode(int number) {
     }
 
     // -O3 will take care of this mess anyway
+}
+
+void *minimap_renderer(void *args) {
+    struct Gsprite *a = register_draw_area(term_width-40, term_height-20, 40,20,100,false);
+    for(int i = 0 ; i < 40; i++)
+        for(int j = 0 ; j < 20; j++)
+            a->charactermap[j][i].chr = 'O';
+    
 }
 
 void *drawUI(void *args) {
@@ -74,7 +82,7 @@ void *drawUI(void *args) {
         a->charactermap[i][term_width-40].chr = '#';
     }
     
-    int hp = 123;
+    int hp = 999;
     while(1) {
         int anger = 10;
 
@@ -84,7 +92,10 @@ void *drawUI(void *args) {
         for(int i = 0 ; i < 6; i++)
             a->charactermap[term_height-bottom_bar_height+1][HP_text_location_from_left+i].chr = HP_text[i];
         int mask = decode(8);
-
+        hp--;
+        if(hp == 0)
+            hp = 999;
+            
         if( hp >= 100 ) {
         ABOMICNACJA(term_height-bottom_bar_height, HP_text_location_from_left-3, decode(hp/100));
         ABOMICNACJA(term_height-bottom_bar_height, HP_text_location_from_left+1, decode((hp/10)%10));
