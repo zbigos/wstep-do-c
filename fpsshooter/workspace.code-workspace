@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "/home/zbigniew/Devel/zlecenia/SPJ_media"
 		}
 	],
 	"settings": {

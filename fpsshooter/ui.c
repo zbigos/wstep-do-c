@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include "g_engine.h"
 #include "main.h"
+#include "map_handler.h"
+
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 #define ABOMICNACJA(XCORD, YCORD, BITMASK) \
     do {    \
@@ -45,11 +49,12 @@ int decode(int number) {
 }
 
 void *minimap_renderer(void *args) {
-    struct Gsprite *a = register_draw_area(term_width-40, term_height-20, 40,20,100,false);
-    for(int i = 0 ; i < 40; i++)
-        for(int j = 0 ; j < 20; j++)
-            a->charactermap[j][i].chr = 'O';
-    
+    struct Gsprite *a = register_draw_area(term_width-40+1, term_height-20+1, 40-2,20-2,100,false);
+    struct map_info_t map;
+    map = getmap();
+    for(int i = 0 ; i < MIN(20-2, map.mapsize_x); i++)
+        for(int j = 0 ; j < MIN(40-2, map.mapsize_y); j++)
+            a->charactermap[i][j].chr = map._map_descriptor[i][j];
 }
 
 void *drawUI(void *args) {

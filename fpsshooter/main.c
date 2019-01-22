@@ -2,13 +2,18 @@
 #include "ui.h"
 #include <ncurses.h>
 #include <pthread.h> 
+#include "map_handler.h"
+#include "main.h"
+
+int term_width = 211;
+int term_height = 55;
 
 int main()
 {	
+    read_map_description("mapa.txt");
+
 	initscr();			/* Start curses mode 		  */
     start_color();
-    
-    read_map_description("still_testing.txt");
 
     pthread_t graphical_engine_thread; 
     pthread_create(&graphical_engine_thread, NULL, graphical_engine, NULL); 

@@ -1,7 +1,7 @@
 #ifndef MAIN
     #define MAIN
-    int term_width = 211;
-    int term_height = 55;
+    extern int term_width;
+    extern int term_height;
 
     struct Point2i {
         int x,y;
@@ -19,5 +19,12 @@
         float dx, dy;
     };
 
+    struct Line {
+        struct Point2i a, b;
+    };
+
+    struct Linef {
+        struct Point2f a, b;
+    };
 
 #endif
