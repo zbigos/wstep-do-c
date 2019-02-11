@@ -2,6 +2,7 @@
 #include "ui.h"
 #include <ncurses.h>
 #include <pthread.h> 
+#include "keyboard_handler.h"
 #include "map_handler.h"
 #include "main.h"
 
@@ -24,10 +25,18 @@ int main()
     pthread_t minimap_thread;
     pthread_create(&minimap_thread, NULL, minimap_renderer, NULL);
 
+    pthread_t env_drawer_thread;
+    pthread_create(&env_drawer_thread, NULL, draw_gamearea, NULL);
+
+    pthread_t keyboard_handler_thread;
+    pthread_create(&keyboard_handler_thread, NULL, keyboard_handler, NULL);
+
 
     pthread_join(graphical_engine_thread, NULL); 
     pthread_join(ui_thread, NULL); 
     pthread_join(minimap_thread, NULL);
+    pthread_join(env_drawer_thread, NULL);
+    pthread_join(keyboard_handler_thread, NULL);
 
 	getch();			/* Wait for user input */
 	endwin();			/* End curses mode		  */

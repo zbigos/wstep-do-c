@@ -44,16 +44,34 @@ void read_map_description(char *filename) {
 
     for(int i = 0 ; i < mapsize_x; i++) {
         fgets(str, 1000, fp);
-        for(int j = 0 ; j < mapsize_y; j++) {
+        for(int j = 0 ; j < mapsize_y; j++)
             map_descriptor[i][j] = str[j];
-            if(str[j] != 'O') {
-                add_wall(i, j, i+1, j);
-                add_wall(i, j, i, j+1);
-                //add_wall(i+1, j+1, i+1, j);
-                //add_wall(i+1, j+1, i, j+1);
-            }
         }
-    }
+
+//poziome
+
+    for(int i = 0 ; i < mapsize_x-1; i++)
+        for(int j = 0 ; j < mapsize_y; j++)
+            if(map_descriptor[i][j] != 'O' && map_descriptor[i+1][j] == 'O')
+                add_wall((float)i+2.0f, (float)j, (float)i+2.0f, (float)j+1.0f); // górne boki
+
+    for(int i = 1 ; i < mapsize_x; i++)
+        for(int j = 0 ; j < mapsize_y; j++)
+            if(map_descriptor[i][j] != 'O' && map_descriptor[i-1][j] == 'O')
+                add_wall((float)i+3.0f, (float)j, (float)i+3.0f, (float)j+1.0f); //dolne boki
+
+//pionowe
+
+    for(int i = 0 ; i < mapsize_x; i++)
+        for(int j = 0 ; j < mapsize_y-1; j++)
+            if(map_descriptor[i][j] != 'O' && map_descriptor[i][j+1] == 'O')
+                add_wall((float)i+2.0f, (float)j+1.0f, (float)i+3.0f, (float)j+1.0f); // prawe boki
+
+    for(int i = 0 ; i < mapsize_x; i++)
+        for(int j = 1 ; j < mapsize_y; j++)
+            if(map_descriptor[i][j] != 'O' && map_descriptor[i][j-1] == 'O')
+                add_wall((float)i+2.0f, (float)j, (float)i+3.0f, (float)j); // lewe boki
+
 
     fclose(fp);
 }

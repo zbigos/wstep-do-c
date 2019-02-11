@@ -2,6 +2,8 @@
 #include "g_engine.h"
 #include "main.h"
 #include "map_handler.h"
+#include "player_handler.h"
+#include <stdlib.h>
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -124,3 +126,26 @@ void *drawUI(void *args) {
     //ANGER
    
 }
+
+void *draw_gamearea(void *args) {
+    struct Gsprite *a = register_draw_area(0, 0, term_width, term_height, 0, false);
+    struct Point2f *cast_resp = malloc(sizeof(struct Point2f) * term_width);
+    while(1) {
+        raycaster(cast_resp);
+        for(int i = 1 ; i < term_width-1; i++)
+            for(int j = 1; j < term_height-10; j++)
+                if(!(j >= term_height-20 && i >= term_width-40))
+                    if(cast_resp[i].y == cast_resp[i+1].y && cast_resp[i].y == cast_resp[i-1].y) {
+                        if(((float)abs((term_height-10)/2 - j) < cast_resp[i].x && (float)abs((term_height-10)/2 - (j+1)) >= cast_resp[i].x) || \
+                        ((float)abs((term_height-10)/2 - j) < cast_resp[i].x && (float)abs((term_height-10)/2 - (j-1)) >= cast_resp[i].x) )
+                            a->charactermap[j][i].chr = 'X';
+                        else
+                            a->charactermap[j][i].chr = ' ';
+                    } else {
+                    if((float)abs((term_height-10)/2 - j) < cast_resp[i].x)
+                        a->charactermap[j][i].chr = 'X';
+                    else
+                        a->charactermap[j][i].chr = ' ';
+                    }
+    }
+} 
